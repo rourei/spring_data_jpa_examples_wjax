@@ -122,6 +122,42 @@ public class QueryServiceTest {
     }
 
     @Test
+    public void testGetEmployeesByName() {
+        List<Employee> employeesByName = queryService.getEmployeesWithName("Mary", "Roberts");
+
+        assertThat(employeesByName, hasSize(1));
+        assertThat(employeesByName, hasEntityItems(maryRoberts));
+        assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, victoriaPullman, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+    }
+
+    @Test
+    public void testGetEmployeesByNameLike() {
+        List<Employee> employeesByName = employeeRepository.findByFirstnameLike("%ictor%");
+
+        assertThat(employeesByName, hasSize(1));
+        assertThat(employeesByName, hasEntityItems(victoriaPullman));
+        assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, maryRoberts, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+
+        employeesByName = employeeRepository.findByFirstnameContaining("ictor");
+
+        assertThat(employeesByName, hasSize(1));
+        assertThat(employeesByName, hasEntityItems(victoriaPullman));
+        assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, maryRoberts, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+
+        employeesByName = employeeRepository.findByFirstnameLike("Victor%");
+
+        assertThat(employeesByName, hasSize(1));
+        assertThat(employeesByName, hasEntityItems(victoriaPullman));
+        assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, maryRoberts, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+
+        employeesByName = employeeRepository.findByFirstnameStartingWith("Victor");
+
+        assertThat(employeesByName, hasSize(1));
+        assertThat(employeesByName, hasEntityItems(victoriaPullman));
+        assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, maryRoberts, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+    }
+
+    @Test
     public void testGetCompaniesInBerlin() {
         List<Company> companiesWithOfficeInBerlin = queryService.getCompaniesWithOfficeIn("Berlin");
 

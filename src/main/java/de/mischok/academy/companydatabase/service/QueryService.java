@@ -18,4 +18,6 @@ public interface QueryService {
     List<Employee> filterEmployees(Optional<String> firstnameFilter, Optional<String> lastnameFilter, Optional<String> companyNameFilter);
 
     Page<Employee> getEmployeePage(int pageSize, int pageIndex);
+
+    List<Employee> getEmployeesWithName(String firstname, String lastname);
 }

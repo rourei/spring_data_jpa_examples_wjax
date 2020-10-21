@@ -69,4 +69,9 @@ public class QueryServiceImpl implements QueryService {
 
         return employeeRepository.findAll(pageRequest);
     }
+
+    @Override
+    public List<Employee> getEmployeesWithName(String firstname, String lastname) {
+        return employeeRepository.findByFirstnameAndLastname(firstname, lastname);
+    }
 }
