@@ -26,6 +26,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 
 	List<Employee> findByFirstnameStartingWith(String firstname);
 
+	List<Employee> findByCompanyAndFirstnameLikeOrLastnameLike(Company company, String firstname, String lastname);
+
+	@Query("select e from Employee e where (e.firstname like :firstname or e.lastname like :lastname) and e.company = :company")
+	List<Employee> getByCompanyAndNameLike(@Param("company") Company company, @Param("firstname") String firstname, @Param("lastname") String lastname);
+
 	@Query("select e from Employee e where exists (select o from Office o where o.company = e.company and o.city = :city)")
-	List<Employee> getAllWorkingInCity(@Param("city") String city);
+	List<Employee> getAllWorkingInCompanyWithOfficeInCity(@Param("city") String city);
 }

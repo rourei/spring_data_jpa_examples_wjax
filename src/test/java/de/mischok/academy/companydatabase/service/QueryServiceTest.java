@@ -158,6 +158,21 @@ public class QueryServiceTest {
     }
 
     @Test
+    public void testGetEmployeesByNameAndCompany() {
+        List<Employee> employeesByQueryMethod = employeeRepository.findByCompanyAndFirstnameLikeOrLastnameLike(neosteel, "%or%", "%er%");
+
+        assertThat(employeesByQueryMethod, hasSize(6));
+        assertThat(employeesByQueryMethod, hasEntityItems(victoriaPullman, trevorPaige, gordonMorgan, kylieButler, maryRoberts, neilUnderwood));
+        assertThat(employeesByQueryMethod, not(hasAnyEntityItem(colinOgden, pippaRussell, elizabethLangdon, alexanderMitchell)));
+
+        List<Employee> employeesByJpql = employeeRepository.getByCompanyAndNameLike(neosteel,"%or%", "%er%");
+
+        assertThat(employeesByJpql, hasSize(4));
+        assertThat(employeesByJpql, hasEntityItems(victoriaPullman, trevorPaige, gordonMorgan, kylieButler));
+        assertThat(employeesByJpql, not(hasAnyEntityItem(colinOgden, pippaRussell, maryRoberts, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+    }
+
+    @Test
     public void testGetCompaniesInBerlin() {
         List<Company> companiesWithOfficeInBerlin = queryService.getCompaniesWithOfficeIn("Berlin");
 
@@ -197,5 +212,4 @@ public class QueryServiceTest {
     public void testPage() {
         // FIXME: Implementation
     }
-
 }

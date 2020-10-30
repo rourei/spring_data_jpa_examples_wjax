@@ -1,7 +1,9 @@
 package de.mischok.academy.companydatabase.service;
 
 import de.mischok.academy.companydatabase.domain.Company;
+import de.mischok.academy.companydatabase.domain.Company_;
 import de.mischok.academy.companydatabase.domain.Employee;
+import de.mischok.academy.companydatabase.domain.Employee_;
 import de.mischok.academy.companydatabase.repository.CompanyRepository;
 import de.mischok.academy.companydatabase.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +37,12 @@ public class QueryServiceImpl implements QueryService {
 
     @Override
     public List<Employee> getEmployeesWorkingInCompanyWithOfficeIn(String city) {
-        return employeeRepository.getAllWorkingInCity(city);
+        return employeeRepository.getAllWorkingInCompanyWithOfficeInCity(city);
     }
 
     @Override
     public List<Employee> filterEmployees(Optional<String> firstnameFilter, Optional<String> lastnameFilter, Optional<String> companyNameFilter) {
-        Specification<Employee> spec = (Specification<Employee>) (root, query, builder) -> {
+        Specification<Employee> specification = (root, query, builder) -> {
             Predicate result = builder.conjunction();
 
             if (firstnameFilter.isPresent()) {
@@ -52,15 +54,13 @@ public class QueryServiceImpl implements QueryService {
             }
 
             if (companyNameFilter.isPresent()) {
-                result = builder.and(result, builder.like(root.get("company").get("name"), "%" + companyNameFilter.get() + "%"));
+                result = builder.and(result, builder.like(root.get(Employee_.company).get(Company_.name), "%" + companyNameFilter.get() + "%"));
             }
-
-            query.distinct(true);
 
             return result;
         };
 
-        return employeeRepository.findAll(spec);
+        return employeeRepository.findAll(specification);
     }
 
     @Override
