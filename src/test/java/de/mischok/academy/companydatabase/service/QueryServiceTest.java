@@ -42,7 +42,7 @@ public class QueryServiceTest {
     Office london;
     Office newYork;
     Office berlinUnterDenLinden;
-    Office berlinPotsdammerPlatz;
+    Office berlinPotsdamerPlatz;
     Office berlinKudamm;
     Office amsterdam;
 
@@ -77,8 +77,8 @@ public class QueryServiceTest {
         london = officeRepository.saveAndFlush(london);
         newYork = Office.builder().city("New York").street("Central Avenue").company(neosteel).build();
         newYork = officeRepository.saveAndFlush(newYork);
-        berlinPotsdammerPlatz = Office.builder().city("Berlin").street("Potsdammer Platz").company(neosteel).build();
-        berlinPotsdammerPlatz = officeRepository.saveAndFlush(berlinPotsdammerPlatz);
+        berlinPotsdamerPlatz = Office.builder().city("Berlin").street("Potsdamer Platz").company(neosteel).build();
+        berlinPotsdamerPlatz = officeRepository.saveAndFlush(berlinPotsdamerPlatz);
 
         berlinUnterDenLinden = Office.builder().city("Berlin").street("Unter den Linden").company(replant).build();
         berlinUnterDenLinden = officeRepository.saveAndFlush(berlinUnterDenLinden);
@@ -104,7 +104,7 @@ public class QueryServiceTest {
 
         colinOgden = Employee.builder().firstname("Colin").lastname("Ogden").company(innovatic).build();
         colinOgden = employeeRepository.saveAndFlush(colinOgden);
-        pippaRussell = Employee.builder().firstname("Pippa").lastname("Russel").company(innovatic).build();
+        pippaRussell = Employee.builder().firstname("Pippa").lastname("Russell").company(innovatic).build();
         pippaRussell = employeeRepository.saveAndFlush(pippaRussell);
         maryRoberts = Employee.builder().firstname("Mary").lastname("Roberts").company(innovatic).build();
         maryRoberts = employeeRepository.saveAndFlush(maryRoberts);
@@ -201,7 +201,7 @@ public class QueryServiceTest {
 
     @Test
     public void testEmployeeFilter() {
-        List<Employee> filtered = queryService.filterEmployees(Optional.empty(), Optional.of("LL"), Optional.of("inno"));
+        List<Employee> filtered = queryService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"));
 
         assertThat(filtered, hasSize(2));
 
