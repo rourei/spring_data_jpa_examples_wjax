@@ -21,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
-public class QueryServiceTest {
+public class QueryTest {
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -33,7 +33,7 @@ public class QueryServiceTest {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private QueryService queryService;
+    private EmployeeService employeeService;
 
     Company neosteel;
     Company replant;
@@ -114,7 +114,7 @@ public class QueryServiceTest {
 
     @Test
     public void testGetEmployeesByCompany() {
-        List<Employee> employeesOfReplant = queryService.getEmployeesOfCompany(innovatic);
+        List<Employee> employeesOfReplant = employeeRepository.findByCompany(innovatic);
 
         assertThat(employeesOfReplant, hasSize(4));
         assertThat(employeesOfReplant, hasEntityItems(colinOgden, pippaRussell, maryRoberts, alexanderMitchell));
@@ -123,7 +123,7 @@ public class QueryServiceTest {
 
     @Test
     public void testGetEmployeesByName() {
-        List<Employee> employeesByName = queryService.getEmployeesWithName("Mary", "Roberts");
+        List<Employee> employeesByName = employeeService.getEmployeesWithName("Mary", "Roberts");
 
         assertThat(employeesByName, hasSize(1));
         assertThat(employeesByName, hasEntityItems(maryRoberts));
@@ -174,7 +174,7 @@ public class QueryServiceTest {
 
     @Test
     public void testGetCompaniesInBerlin() {
-        List<Company> companiesWithOfficeInBerlin = queryService.getCompaniesWithOfficeIn("Berlin");
+        List<Company> companiesWithOfficeInBerlin = companyRepository.getCompaniesInCity("Berlin");
 
         assertThat(companiesWithOfficeInBerlin, hasSize(3));
         assertThat(companiesWithOfficeInBerlin, hasEntityItems(neosteel, replant, innovatic));
@@ -182,7 +182,7 @@ public class QueryServiceTest {
 
     @Test
     public void testGetCompaniesInNewYork() {
-        List<Company> companiesWithOfficeInNewYork = queryService.getCompaniesWithOfficeIn("New York");
+        List<Company> companiesWithOfficeInNewYork = companyRepository.getCompaniesInCity("New York");
 
         assertThat(companiesWithOfficeInNewYork, hasSize(1));
         assertThat(companiesWithOfficeInNewYork, hasEntityItems(neosteel));
@@ -191,7 +191,7 @@ public class QueryServiceTest {
 
     @Test
     public void testEmployeesWorkingInCompanyWithOfficeIn() {
-        List<Employee> employeesWorkingInCompanyWithOfficeInAmsterdam = queryService.getEmployeesWorkingInCompanyWithOfficeIn("Amsterdam");
+        List<Employee> employeesWorkingInCompanyWithOfficeInAmsterdam = employeeRepository.getAllWorkingInCompanyWithOfficeInCity("Amsterdam");
 
         assertThat(employeesWorkingInCompanyWithOfficeInAmsterdam, hasSize(4));
 
@@ -201,7 +201,7 @@ public class QueryServiceTest {
 
     @Test
     public void testEmployeeFilter() {
-        List<Employee> filtered = queryService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"));
+        List<Employee> filtered = employeeService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"));
 
         assertThat(filtered, hasSize(2));
 

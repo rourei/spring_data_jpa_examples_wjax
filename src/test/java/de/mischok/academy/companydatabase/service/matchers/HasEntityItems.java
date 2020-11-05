@@ -1,7 +1,6 @@
 package de.mischok.academy.companydatabase.service.matchers;
 
 import de.mischok.academy.companydatabase.domain.WithId;
-import de.mischok.academy.companydatabase.service.QueryServiceTest;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

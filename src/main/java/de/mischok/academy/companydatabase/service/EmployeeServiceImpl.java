@@ -1,14 +1,10 @@
 package de.mischok.academy.companydatabase.service;
 
-import de.mischok.academy.companydatabase.domain.Company;
 import de.mischok.academy.companydatabase.domain.Company_;
 import de.mischok.academy.companydatabase.domain.Employee;
 import de.mischok.academy.companydatabase.domain.Employee_;
-import de.mischok.academy.companydatabase.repository.CompanyRepository;
 import de.mischok.academy.companydatabase.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class QueryServiceImpl implements QueryService {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Override
-    public List<Employee> getEmployeesOfCompany(Company company) {
-        return employeeRepository.findByCompany(company);
-    }
-
-    @Override
-    public List<Company> getCompaniesWithOfficeIn(String city) {
-        return companyRepository.getCompaniesInCity(city);
-    }
-
-    @Override
-    public List<Employee> getEmployeesWorkingInCompanyWithOfficeIn(String city) {
-        return employeeRepository.getAllWorkingInCompanyWithOfficeInCity(city);
-    }
 
     @Override
     public List<Employee> filterEmployees(Optional<String> firstnameFilter, Optional<String> lastnameFilter, Optional<String> companyNameFilter) {
@@ -61,13 +39,6 @@ public class QueryServiceImpl implements QueryService {
         };
 
         return employeeRepository.findAll(specification);
-    }
-
-    @Override
-    public Page<Employee> getEmployeePage(int pageSize, int pageIndex) {
-        PageRequest pageRequest = PageRequest.of(pageIndex, pageSize);
-
-        return employeeRepository.findAll(pageRequest);
     }
 
     @Override
