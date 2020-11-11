@@ -10,6 +10,9 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.util.List;
 
+/**
+ * Matcher implementation to compare entities via id.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class HasAnyEntityItem extends TypeSafeMatcher<List<? extends WithId>> {
 

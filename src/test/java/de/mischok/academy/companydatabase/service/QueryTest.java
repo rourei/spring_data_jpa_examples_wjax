@@ -207,9 +207,4 @@ public class QueryTest {
 
         assertThat(filtered, hasEntityItems(pippaRussell, alexanderMitchell));
     }
-
-    @Test
-    public void testPage() {
-        // FIXME: Implementation
-    }
 }

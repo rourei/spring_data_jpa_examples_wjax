@@ -13,9 +13,6 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
-	@Query("select e from Employee e where e.company = :company")
-	List<Employee> getByCompany(@Param("company") Company company);
-	
 	List<Employee> findByCompany(Company company);
 
 	List<Employee> findByFirstnameAndLastname(String firstname, String lastname);
