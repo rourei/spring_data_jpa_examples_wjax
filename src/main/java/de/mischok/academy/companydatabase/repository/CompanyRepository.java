@@ -13,4 +13,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
 	@Query("select c from Company c where exists (select o from Office o where o.company = c and o.city = :city)")
 	List<Company> getCompaniesInCity(@Param("city") String city);
+
+    List<Company> findByOfficesIsEmpty();
 }

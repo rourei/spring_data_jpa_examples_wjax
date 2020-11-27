@@ -207,4 +207,14 @@ public class QueryTest {
 
         assertThat(filtered, hasEntityItems(pippaRussell, alexanderMitchell));
     }
+
+    @Test
+    public void testCompaniesWithoutOffices() {
+        officeRepository.deleteAll(officeRepository.findByCompany(neosteel));
+
+        List<Company> companiesWithoutOffices = companyRepository.findByOfficesIsEmpty();
+
+        assertThat(companiesWithoutOffices, hasSize(1));
+        assertThat(companiesWithoutOffices, hasEntityItems(neosteel));
+    }
 }
