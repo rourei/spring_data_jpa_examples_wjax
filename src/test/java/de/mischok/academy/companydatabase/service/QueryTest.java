@@ -1,24 +1,26 @@
 package de.mischok.academy.companydatabase.service;
 
+import static de.mischok.academy.companydatabase.service.matchers.HasAnyEntityItem.hasAnyEntityItem;
+import static de.mischok.academy.companydatabase.service.matchers.HasEntityItems.hasEntityItems;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
 import de.mischok.academy.companydatabase.domain.Company;
 import de.mischok.academy.companydatabase.domain.Employee;
 import de.mischok.academy.companydatabase.domain.Office;
 import de.mischok.academy.companydatabase.repository.CompanyRepository;
 import de.mischok.academy.companydatabase.repository.EmployeeRepository;
 import de.mischok.academy.companydatabase.repository.OfficeRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
-import static de.mischok.academy.companydatabase.service.matchers.HasAnyEntityItem.hasAnyEntityItem;
-import static de.mischok.academy.companydatabase.service.matchers.HasEntityItems.hasEntityItems;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class QueryTest {
@@ -88,32 +90,32 @@ public class QueryTest {
         amsterdam = Office.builder().city("Amsterdam").street("Prinsengracht").company(innovatic).build();
         amsterdam = officeRepository.saveAndFlush(amsterdam);
 
-        victoriaPullman = Employee.builder().firstname("Victoria").lastname("Pullman").company(neosteel).build();
+        victoriaPullman = Employee.builder().firstname("Victoria").lastname("Pullman").company(neosteel).age(24).build();
         victoriaPullman = employeeRepository.saveAndFlush(victoriaPullman);
-        trevorPaige = Employee.builder().firstname("Trevor").lastname("Paige").company(neosteel).build();
+        trevorPaige = Employee.builder().firstname("Trevor").lastname("Paige").company(neosteel).age(43).build();
         trevorPaige = employeeRepository.saveAndFlush(trevorPaige);
-        kylieButler = Employee.builder().firstname("Kylie").lastname("Butler").company(neosteel).build();
+        kylieButler = Employee.builder().firstname("Kylie").lastname("Butler").company(neosteel).age(37).build();
         kylieButler = employeeRepository.saveAndFlush(kylieButler);
-        gordonMorgan = Employee.builder().firstname("Gordon").lastname("Morgan").company(neosteel).build();
+        gordonMorgan = Employee.builder().firstname("Gordon").lastname("Morgan").company(neosteel).age(51).build();
         gordonMorgan = employeeRepository.saveAndFlush(gordonMorgan);
 
-        neilUnderwood = Employee.builder().firstname("Neil").lastname("Underwood").company(replant).build();
+        neilUnderwood = Employee.builder().firstname("Neil").lastname("Underwood").company(replant).age(23).build();
         neilUnderwood = employeeRepository.saveAndFlush(neilUnderwood);
-        elizabethLangdon = Employee.builder().firstname("Elizabeth").lastname("Langdon").company(replant).build();
+        elizabethLangdon = Employee.builder().firstname("Elizabeth").lastname("Langdon").company(replant).age(61).build();
         elizabethLangdon = employeeRepository.saveAndFlush(elizabethLangdon);
 
-        colinOgden = Employee.builder().firstname("Colin").lastname("Ogden").company(innovatic).build();
+        colinOgden = Employee.builder().firstname("Colin").lastname("Ogden").company(innovatic).age(32).build();
         colinOgden = employeeRepository.saveAndFlush(colinOgden);
-        pippaRussell = Employee.builder().firstname("Pippa").lastname("Russell").company(innovatic).build();
+        pippaRussell = Employee.builder().firstname("Pippa").lastname("Russell").company(innovatic).age(22).build();
         pippaRussell = employeeRepository.saveAndFlush(pippaRussell);
-        maryRoberts = Employee.builder().firstname("Mary").lastname("Roberts").company(innovatic).build();
+        maryRoberts = Employee.builder().firstname("Mary").lastname("Roberts").company(innovatic).age(54).build();
         maryRoberts = employeeRepository.saveAndFlush(maryRoberts);
-        alexanderMitchell = Employee.builder().firstname("Alexander").lastname("Mitchell").company(innovatic).build();
+        alexanderMitchell = Employee.builder().firstname("Alexander").lastname("Mitchell").company(innovatic).age(34).build();
         alexanderMitchell = employeeRepository.saveAndFlush(alexanderMitchell);
     }
 
     @Test
-    public void testGetEmployeesByCompany() {
+    public void testGetEmployeesByCompany_queryMethods() {
         List<Employee> employeesOfReplant = employeeRepository.findByCompany(innovatic);
 
         assertThat(employeesOfReplant, hasSize(4));
@@ -122,7 +124,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetEmployeesByName() {
+    public void testGetEmployeesByName_queryMethods() {
         List<Employee> employeesByName = employeeService.getEmployeesWithName("Mary", "Roberts");
 
         assertThat(employeesByName, hasSize(1));
@@ -131,7 +133,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetEmployeesByNameLike() {
+    public void testGetEmployeesByNameLike_queryMethods() {
         List<Employee> employeesByName = employeeRepository.findByFirstnameLike("%ictor%");
 
         assertThat(employeesByName, hasSize(1));
@@ -158,7 +160,17 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetEmployeesByNameAndCompany() {
+    public void testCompaniesWithoutOffices_queryMethods() {
+        officeRepository.deleteAll(officeRepository.findByCompany(neosteel));
+
+        List<Company> companiesWithoutOffices = companyRepository.findByOfficesIsEmpty();
+
+        assertThat(companiesWithoutOffices, hasSize(1));
+        assertThat(companiesWithoutOffices, hasEntityItems(neosteel));
+    }
+
+    @Test
+    public void testGetEmployeesByNameAndCompany_jpql() {
         List<Employee> employeesByQueryMethod = employeeRepository.findByCompanyAndFirstnameLikeOrLastnameLike(neosteel, "%or%", "%er%");
 
         assertThat(employeesByQueryMethod, hasSize(6));
@@ -173,7 +185,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetCompaniesInBerlin() {
+    public void testGetCompaniesInBerlin_jpql() {
         List<Company> companiesWithOfficeInBerlin = companyRepository.getCompaniesInCity("Berlin");
 
         assertThat(companiesWithOfficeInBerlin, hasSize(3));
@@ -181,7 +193,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetCompaniesInNewYork() {
+    public void testGetCompaniesInNewYork_jpql() {
         List<Company> companiesWithOfficeInNewYork = companyRepository.getCompaniesInCity("New York");
 
         assertThat(companiesWithOfficeInNewYork, hasSize(1));
@@ -190,7 +202,7 @@ public class QueryTest {
     }
 
     @Test
-    public void testEmployeesWorkingInCompanyWithOfficeIn() {
+    public void testEmployeesWorkingInCompanyWithOfficeIn_jpql() {
         List<Employee> employeesWorkingInCompanyWithOfficeInAmsterdam = employeeRepository.getAllWorkingInCompanyWithOfficeInCity("Amsterdam");
 
         assertThat(employeesWorkingInCompanyWithOfficeInAmsterdam, hasSize(4));
@@ -200,21 +212,20 @@ public class QueryTest {
     }
 
     @Test
-    public void testEmployeeFilter() {
-        List<Employee> filtered = employeeService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"));
-
+    public void testFilterEmployees_qbe() {
+        List<Employee> filtered = employeeService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("INNO"));
         assertThat(filtered, hasSize(2));
-
         assertThat(filtered, hasEntityItems(pippaRussell, alexanderMitchell));
     }
 
     @Test
-    public void testCompaniesWithoutOffices() {
-        officeRepository.deleteAll(officeRepository.findByCompany(neosteel));
+    public void testEmployeeFilter_specifications() {
+        List<Employee> filtered = employeeService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"), Optional.empty());
+        assertThat(filtered, hasSize(2));
+        assertThat(filtered, hasEntityItems(pippaRussell, alexanderMitchell));
 
-        List<Company> companiesWithoutOffices = companyRepository.findByOfficesIsEmpty();
-
-        assertThat(companiesWithoutOffices, hasSize(1));
-        assertThat(companiesWithoutOffices, hasEntityItems(neosteel));
+        filtered = employeeService.filterEmployees(Optional.empty(), Optional.of("ll"), Optional.of("inno"), Optional.of(30));
+        assertThat(filtered, hasSize(1));
+        assertThat(filtered, hasEntityItems(alexanderMitchell));
     }
 }

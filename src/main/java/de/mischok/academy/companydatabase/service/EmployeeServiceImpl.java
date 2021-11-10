@@ -1,16 +1,21 @@
 package de.mischok.academy.companydatabase.service;
 
+import de.mischok.academy.companydatabase.domain.Company;
 import de.mischok.academy.companydatabase.domain.Company_;
 import de.mischok.academy.companydatabase.domain.Employee;
 import de.mischok.academy.companydatabase.domain.Employee_;
 import de.mischok.academy.companydatabase.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.Predicate;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.criteria.Predicate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -20,6 +25,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> filterEmployees(Optional<String> firstnameFilter, Optional<String> lastnameFilter, Optional<String> companyNameFilter) {
+        Employee probe = new Employee();
+
+        firstnameFilter.ifPresent(probe::setFirstname);
+        lastnameFilter.ifPresent(probe::setLastname);
+        companyNameFilter.ifPresent(s -> probe.setCompany(Company.builder().name(s).build()));
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAll()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase("firstname", "lastname", "company.name");
+
+        Example<Employee> example = Example.of(probe, exampleMatcher);
+
+        return employeeRepository.findAll(example);
+    }
+
+    @Override
+    public List<Employee> filterEmployees(Optional<String> firstnameFilter, Optional<String> lastnameFilter, Optional<String> companyNameFilter, Optional<Integer> olderThan) {
         Specification<Employee> specification = (root, query, builder) -> {
             Predicate result = builder.conjunction();
 
@@ -33,6 +55,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             if (companyNameFilter.isPresent()) {
                 result = builder.and(result, builder.like(root.get(Employee_.company).get(Company_.name), "%" + companyNameFilter.get() + "%"));
+            }
+
+            if (olderThan.isPresent()) {
+                result = builder.and(result, builder.greaterThan(root.get("age"), olderThan.get()));
             }
 
             return result;

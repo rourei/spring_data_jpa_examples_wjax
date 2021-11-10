@@ -29,4 +29,7 @@ public class Employee implements WithId {
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	private Company company;
+
+	@Column(name = "age")
+	private Integer age;
 }
