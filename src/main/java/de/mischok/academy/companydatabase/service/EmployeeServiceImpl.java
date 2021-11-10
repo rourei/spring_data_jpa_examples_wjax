@@ -29,7 +29,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         firstnameFilter.ifPresent(probe::setFirstname);
         lastnameFilter.ifPresent(probe::setLastname);
-        companyNameFilter.ifPresent(s -> probe.setCompany(Company.builder().name(s).build()));
+        companyNameFilter.ifPresent(companyNameFilterString -> probe.setCompany(Company.builder().name(companyNameFilterString).build()));
 
         ExampleMatcher exampleMatcher = ExampleMatcher.matchingAll()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)

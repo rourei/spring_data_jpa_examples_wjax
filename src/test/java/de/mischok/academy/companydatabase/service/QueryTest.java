@@ -115,21 +115,21 @@ public class QueryTest {
     }
 
     @Test
-    public void testGetEmployeesByCompany_queryMethods() {
-        List<Employee> employeesOfReplant = employeeRepository.findByCompany(innovatic);
-
-        assertThat(employeesOfReplant, hasSize(4));
-        assertThat(employeesOfReplant, hasEntityItems(colinOgden, pippaRussell, maryRoberts, alexanderMitchell));
-        assertThat(employeesOfReplant, not(hasAnyEntityItem(victoriaPullman, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon)));
-    }
-
-    @Test
     public void testGetEmployeesByName_queryMethods() {
         List<Employee> employeesByName = employeeService.getEmployeesWithName("Mary", "Roberts");
 
         assertThat(employeesByName, hasSize(1));
         assertThat(employeesByName, hasEntityItems(maryRoberts));
         assertThat(employeesByName, not(hasAnyEntityItem(colinOgden, pippaRussell, victoriaPullman, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon, alexanderMitchell)));
+    }
+
+    @Test
+    public void testGetEmployeesByCompany_queryMethods() {
+        List<Employee> employeesOfReplant = employeeRepository.findByCompany(innovatic);
+
+        assertThat(employeesOfReplant, hasSize(4));
+        assertThat(employeesOfReplant, hasEntityItems(colinOgden, pippaRussell, maryRoberts, alexanderMitchell));
+        assertThat(employeesOfReplant, not(hasAnyEntityItem(victoriaPullman, trevorPaige, kylieButler, gordonMorgan, neilUnderwood, elizabethLangdon)));
     }
 
     @Test
@@ -171,6 +171,21 @@ public class QueryTest {
 
     @Test
     public void testGetEmployeesByNameAndCompany_jpql() {
+        /*
+            Victoria Pullman => NEOSTEEL
+            Trevor Paige => NEOSTEEL
+            Kylie Butler => NEOSTEEL
+            Gordon Morgan => NEOSTEEL
+
+            Neil Underwood => REplant Gardening
+            Elizabeth Langdon => REplant Gardening
+
+            Colin Ogden => innovatic. design.
+            Pippa Russell => innovatic. design.
+            Mary Roberts => innovatic. design.
+            Alexander Mitchell => innovatic. design.
+         */
+
         List<Employee> employeesByQueryMethod = employeeRepository.findByCompanyAndFirstnameLikeOrLastnameLike(neosteel, "%or%", "%er%");
 
         assertThat(employeesByQueryMethod, hasSize(6));
